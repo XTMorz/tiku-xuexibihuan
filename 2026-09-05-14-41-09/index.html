@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="Doljkff4waWpOkSebCHEPH">
+<head data-page-node-id="VdOuMfUlMgOgjKwodIKMFC">
+  <meta charset="UTF-8" data-page-node-id="ig6F059Ua8ZEE9Fz6guSxL" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>题库 · 学习闭环</title>
+  <link rel="stylesheet" href="styles.css" data-page-node-id="rXQlLurcsuQRxtqIjfR894" />
+  <!-- PDF.js (本地解析用) -->
+  <script src="./vendor/pdfjs/pdf.min.js"></script>
+  <!-- Tesseract.js (扫描件 OCR 兜底) -->
+  <script src="./vendor/tesseract/tesseract.min.js"></script>
+  <!-- mupdf.js (PDF.js 抽不到文本时的兜底：能解码 Identity-H 无 ToUnicode 的 PDF) -->
+  <script type="module" src="./vendor/mupdf-loader.js"></script>
+  <!-- JSZip (解析 .docx 文件需要：docx 本质是 zip) -->
+  <script src="./vendor/jszip/jszip.min.js"></script>
+  <!-- 自定义莫兰迪色 SVG 图标库（统一风格） -->
+  <script src="./vendor/icons.js"></script>
+</head>
+<body data-page-node-id="c3sgbbH2scMQOxG42eSoPM">
+  <header class="app-header" data-page-node-id="g1rEUrka8GdZvr7PPZDPS5">
+    <div class="brand" data-page-node-id="oRbJ4MLTVmlu9uBvsfRan7">
+      <span class="logo" id="brand-logo" data-page-node-id="QkD40oj9SA6T05KdOA65L5"></span>
+      <h1 data-page-node-id="haiiRO1uallGGaBsAhYfm3">题库 · 学习闭环</h1>
+    </div>
+    <nav class="tabs" id="tabs" data-page-node-id="0bJD55UuOlQIaQJM34Twmu">
+      <button class="tab active" data-tab="library" id="tab-library-text" data-page-node-id="zHgizOHUyvfsQMf4WnfhRc">题库</button>
+      <button class="tab" data-tab="practice" id="tab-practice-text" data-page-node-id="uilKGNDK8KvY7CBMj3fGOd">练习</button>
+      <button class="tab" data-tab="wrong" id="tab-wrong-text" data-page-node-id="ZyEiHgkWy4VQCadNeiuX02">错题本<span class="badge" id="bad-wrong" data-page-node-id="hAeyZPiHx8o5sBewp9Kw3i"></span></button>
+      <button class="tab" data-tab="fav" id="tab-fav-text" data-page-node-id="jQCkNCJinfEqMCapOqGVSp">收藏<span class="badge" id="bad-fav" data-page-node-id="5q4h2bYsRT59GEN8qH9TZo"></span></button>
+      <button class="tab" data-tab="stats" id="tab-stats-text" data-page-node-id="sfi2VrN855OK0B4G0AtLWr">统计</button>
+    </nav>
+    <div class="header-actions" data-page-node-id="DGOlQMsaAQ1DA8qnL4N6M6">
+      <button id="sync-indicator" class="sync-indicator" hidden title="云同步状态" data-page-node-id="s5N2kL9mP4xT1vQ7wR3Y8B"></button>
+      <div class="popover-host">
+        <button id="btn-settings" class="btn ghost" title="设置与帮助" data-page-node-id="LKjms9HnZZz2RcuObKj62Q"></button>
+        <div id="settings-popover" class="popover" hidden data-page-node-id="p2q8X9ghUT2yKE9bEo4dLh">
+          <button class="popover-item" data-action="export" data-page-node-id="hX2jQvTbF4nBnYr5uJ7xKk">
+            <span class="ic ic-export"></span><span>导出题库</span>
+          </button>
+          <label class="popover-item" data-page-node-id="pG3QYEgvGfTr5Hyz4N3xMm">
+            <span class="ic ic-import"></span><span>导入题库</span>
+            <input type="file" id="file-import" accept="application/json" hidden data-page-node-id="Vu6qpviPCjDYUZ1h9WLb6Y" />
+          </label>
+          <button class="popover-item" data-action="sync" data-page-node-id="gS3yNc4rTq5Lp2XmWv8KhB">
+            <span class="ic ic-sync"></span><span>同步设置</span>
+          </button>
+          <hr/>
+          <button class="popover-item" data-action="guide" data-page-node-id="oT7vNH9nCnYd3WvKQJzMq3">
+            <span class="ic ic-guide"></span><span>上手指南</span>
+          </button>
+          <button class="popover-item" data-action="shortcuts" data-page-node-id="aB1CdEfGhIjKlMnOpQrSt2">
+            <span class="ic ic-shortcuts"></span><span>快捷键</span>
+          </button>
+          <button class="popover-item" data-action="about" data-page-node-id="zX9Y7W6V5U4T3S2R1Q0P9O8">
+            <span class="ic ic-about"></span><span>关于</span>
+          </button>
+        </div>
+      </div>
+      <button id="btn-clear-all" class="btn danger ghost" title="清空所有题库、章节与练习记录" data-page-node-id="rVLupKrAFaxWOGdmAmbBPd"></button>
+    </div>
+  </header>
+
+  <main id="main" data-page-node-id="5XmROW8DCdZPXIGEro2thW">
+    <!-- ============ 题库 ============ -->
+    <section class="view active" data-view="library" data-page-node-id="ATmiZA8M1kDpOMMVWq7h2U">
+      <aside class="sidebar" id="sidebar" data-page-node-id="sgqTCTXZ0t8gmUh0pSarzP">
+        <div class="sidebar-head" data-page-node-id="NGyZsxChZTFzz1BANlyriX">
+          <h2 id="sidebar-title" data-page-node-id="qpNedhx3I8iuULkp8Qabm5">教材 / 章节</h2>
+          <button id="btn-new-chapter" class="btn small" title="在当前教材下新建章节" data-page-node-id="W1qLVu6kgvd7FxgKjIjHYm"></button>
+        </div>
+        <ul id="chapter-list" class="chapter-list" data-page-node-id="WE9m3SUeJJ2ijIgpxEtI0g"></ul>
+      </aside>
+      <div class="content" data-page-node-id="4C3k4hfhKB8ppH2OnGohV7">
+        <div class="content-head" data-page-node-id="k0pYcBYNnTJynMrI2utmdZ">
+          <div data-page-node-id="MEOyh3mQ03TmrrJQJVmhII">
+            <h2 id="lib-title" title="双击可重命名" data-page-node-id="xWwF8UquRdkhO2X14qF9Yc">所有章节</h2>
+            <p class="muted" id="lib-meta" data-page-node-id="vo5y5OgJgk7T6UKFwaOCI0"></p>
+          </div>
+          <div class="head-actions" data-page-node-id="QJ0e8wWD9ZitiiEmvmssl3">
+            <label class="btn primary" id="btn-upload-label" data-page-node-id="NWXQkq8OpJTNSnOWMeYcwb">
+              <input type="file" id="file-pdf" accept="*/*" hidden data-page-node-id="VQs6hOAq6FHnhBGSF2HS6i" />
+            </label>
+            <button id="btn-add-question" class="btn" data-page-node-id="QrLAbyRM7ukaaznPtgrioR"></button>
+            <button id="btn-rename-chapter" class="btn ghost" hidden data-page-node-id="U9vvMf6ciJyWbTAJX6WJWb"></button>
+            <button id="btn-delete-chapter" class="btn danger ghost" hidden data-page-node-id="JR6DWgX3OHkZzYNoYtdiYb"></button>
+            <button id="btn-delete-book" class="btn danger ghost" hidden data-page-node-id="xFPC2KLWAwuESbr7JkKSXH"></button>
+          </div>
+        </div>
+        <div class="search-bar" data-page-node-id="SMB6wKOBIh04LsJzYHmYOe">
+          <span id="lib-search-icon" data-page-node-id="uAA8NjJmMF9JFCf0CRNCDS"></span>
+          <input type="search" id="lib-search" placeholder="搜索题干、答案、解析…（回车跳转练习）" data-page-node-id="P0dwbhTNcoD6qsvtHJvpYj" />
+        </div>
+        <div id="lib-filter-bar" class="filter-bar" data-page-node-id="f1LtR8yK2pN3mQ4vB5xT6w">
+          <button class="filter-chip active" data-filter="all" data-page-node-id="fc1A2bC3dE4fG5hI6jK7l">
+            全部 <span class="chip-count" id="cnt-all">0</span>
+          </button>
+          <button class="filter-chip warn" data-filter="no-answer" data-page-node-id="fc2B3cD4eF5gH6iJ7kL8m">
+            ⚠ 无答案 <span class="chip-count" id="cnt-no-answer">0</span>
+          </button>
+          <button class="filter-chip warn" data-filter="no-explain" data-page-node-id="fc3C4dE5fG6hI7jK8lM9">
+            ⚠ 无解析 <span class="chip-count" id="cnt-no-explain">0</span>
+          </button>
+          <button class="filter-chip danger" data-filter="both-missing" data-page-node-id="fc4D5eF6gH7iJ8kL9mN0">
+            ❌ 都缺 <span class="chip-count" id="cnt-both">0</span>
+          </button>
+        </div>
+        <div id="question-list" class="question-list" data-page-node-id="rUXH3yZDwubAEWiwBA7LFR"></div>
+      </div>
+    </section>
+
+    <!-- ============ 练习 ============ -->
+    <section class="view" data-view="practice" data-page-node-id="ZVQZOqeFyEI8JqFwDRGcQx">
+      <div class="content wide" data-page-node-id="req4RDDGk5K5JRgiRTHPgP">
+        <div class="practice-bar" data-page-node-id="m0D7XuVegxp1757NeHQak0">
+          <select id="practice-range" data-page-node-id="h4xFOL4rtiZGbldqtVfm2O">
+            <option value="all" data-page-node-id="xF0t3mtixGBq06Z2MTkmFB">全部题目</option>
+            <option value="chapter" data-page-node-id="2JnGZYzQoQawLrKm2jvBec">按章节…</option>
+            <option value="wrong" data-page-node-id="8IrmKB0u95YykmdkqbIPas">仅错题本</option>
+            <option value="fav" data-page-node-id="KIoQ9wBuzOABdn7Ou02lK0">仅收藏</option>
+            <option value="unfav" data-page-node-id="yzc4asVZDsMfzefkpLYrXq">未收藏</option>
+            <option value="unwrong" data-page-node-id="eudbbokT31g0TGTclyFb9C">非错题</option>
+          </select>
+          <select id="practice-chapter-pick" hidden data-page-node-id="hv7fKMSzKbvQPLpK3qLCDH"></select>
+          <select id="practice-qtype" title="按题型筛选练习" data-page-node-id="pqT1yPeF1lTer0000001">
+            <option value="all">全部题型</option>
+            <option value="single">单项选择题</option>
+            <option value="multi">多项选择题</option>
+            <option value="judge">判断题</option>
+            <option value="calc">计算分析题</option>
+            <option value="essay">综合题</option>
+          </select>
+          <select id="practice-flag" title="按提醒（缺答案/缺解析等）筛选练习" data-page-node-id="pqF1lAgF1lTer0000002">
+            <option value="all">全部题况</option>
+            <option value="no-answer">⚠ 无答案</option>
+            <option value="no-explain">⚠ 无解析</option>
+            <option value="both-missing">❌ 答案解析都缺</option>
+            <option value="unpracticed">未练习过</option>
+            <option value="wrong">错题</option>
+          </select>
+          <select id="practice-mode" data-page-node-id="cyClStzkT2SJtaBQA6aATv">
+            <option value="sequential" data-page-node-id="rUfUeCP2iL3vBHz9zQn9OD">顺序练习</option>
+            <option value="shuffle" data-page-node-id="RD12hLUlLHDNirLMXPUDRh">乱序练习</option>
+          </select>
+          <button id="btn-start-practice" class="btn primary" data-page-node-id="nsyt8tcOZNf3W6W3Cn4dHF"></button>
+        </div>
+        <div id="practice-area" data-page-node-id="9pHKBvUSRieKPz1zW2y5IS"></div>
+      </div>
+    </section>
+
+    <!-- ============ 错题本 / 收藏 ============ -->
+    <section class="view" data-view="wrong" data-page-node-id="J8CYjcQvoT5Id1VhVL8I8x">
+      <div class="content wide" data-page-node-id="PwkANM5QhVMDhYkLgbGvSv">
+        <div class="content-head" data-page-node-id="44W654QBCRWB9BvaaHIdID">
+          <div data-page-node-id="2wwO2DWkN5LVqaFNdke2Gs">
+            <h2 id="wrong-title" data-page-node-id="ZWKOYstrkfAiBSo7X2jmPN">错题本</h2>
+            <p class="muted" id="wrong-meta" data-page-node-id="yZOmJZxlplHUe2J2nCRU7h"></p>
+          </div>
+          <div class="head-actions" data-page-node-id="2rHYrmfGosx0crBDKtBlyj">
+            <button id="btn-practice-wrong" class="btn primary" data-page-node-id="BR8zzN8cZABrcMpCOiumf7"></button>
+            <button id="btn-clear-wrong" class="btn danger ghost" data-page-node-id="EOFv96TGFL9aRA3B3qljE2"></button>
+          </div>
+        </div>
+        <div id="wrong-list" class="question-list" data-page-node-id="tj6Ew0KAjcRflDqowz1bZi"></div>
+      </div>
+    </section>
+
+    <section class="view" data-view="fav" data-page-node-id="mH1PIgpOeIf0lrFvG9aeV3">
+      <div class="content wide" data-page-node-id="3DgdRFtAUxP4J95nouaPLk">
+        <div class="content-head" data-page-node-id="0RCqRvhI4JlWhMj1qrZ2q5">
+          <div data-page-node-id="iSbngWJVNA2F0CnSNJ8oe0">
+            <h2 id="fav-title" data-page-node-id="OGo22RRlBlUaLJb2gvnXAG">收藏</h2>
+            <p class="muted" id="fav-meta" data-page-node-id="Ak1ECJdmDzipGZ33GEsbrV"></p>
+          </div>
+          <div class="head-actions" data-page-node-id="pqSep1D084aLmbBO6gqUip">
+            <button id="btn-practice-fav" class="btn primary" data-page-node-id="1xLGR0RluVaX9D1IBWRu6p"></button>
+            <button id="btn-clear-fav" class="btn danger ghost" data-page-node-id="Ayan8uoanp2V8FP8pXzpow"></button>
+          </div>
+        </div>
+        <div id="fav-list" class="question-list" data-page-node-id="vyqZUMyzEMvN7GyOExOfuM"></div>
+      </div>
+    </section>
+
+    <!-- ============ 统计 ============ -->
+    <section class="view" data-view="stats" data-page-node-id="Y78ZxrKEnN5FHlAHfUWtOZ">
+      <div class="content wide" data-page-node-id="Xal6uI46CcLCV4DZCseaFP">
+        <h2 id="stats-title" data-page-node-id="vADCJsuOdT54s653KylAVr">学习情况</h2>
+        <div class="stats-grid" id="stats-grid" data-page-node-id="sJCcAg4dWeiIk3JNx6dNji"></div>
+        <div class="stats-charts" data-page-node-id="xtfls2aRZQ6MNGMy65Wgqb">
+          <div class="chart-card" data-page-node-id="kHL6QQ50E5iaV3BmjvTr04">
+            <h3 id="stats-chapter-title" data-page-node-id="RnucgDbpBras7xBdLC5aq0">章节掌握度（正确率）</h3>
+            <div id="chart-chapter" class="bar-chart" data-page-node-id="LUvChRyoVpf6yh6VjrHTh3"></div>
+          </div>
+          <div class="chart-card" data-page-node-id="ltcn7q7D6nKJ3XezcZpRjH">
+            <h3 id="stats-trend-title" data-page-node-id="rIZj7TMIvDOXYoMkbEtv4F">最近 7 天刷题量</h3>
+            <div id="chart-trend" class="bar-chart" data-page-node-id="frqKphQa2HYs8OHXEFtBJ5"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ 模态框：清空题库确认 ============ -->
+  <div class="modal" id="modal-clear" hidden data-page-node-id="RMUFpkhN3zfIF69IeBOnyc">
+    <div class="modal-card" data-page-node-id="y4wlaZuFnOgMXWpcatoDj9">
+      <header data-page-node-id="PBU1cY3UU9DboBLtcJGsBw">
+        <h3 id="modal-clear-title" data-page-node-id="SpezfOSkElAbscKQSALhXk"></h3>
+        <button class="icon-btn" data-close data-page-node-id="O4YMWBSjignJckvWyGXhMA"></button>
+      </header>
+      <div class="modal-body" data-page-node-id="kanbeV3HHWtfIYaQwGGVNF">
+        <p style="color:var(--danger);font-weight:600" data-page-node-id="Qcl4vuvUNLZDs1ea9oZ0qh">此操作不可撤销！</p>
+        <p class="muted" id="clear-summary" data-page-node-id="d1vzGdGt2F7qgP1dkYandO">将删除所有章节、所有题目、错题本、收藏、练习记录与笔记。</p>
+        <p style="margin-top:14px" data-page-node-id="vvgth5IhphgvXOlXkst5aF">为防止误操作，请在下方输入 <code style="background:var(--bg-3);padding:2px 6px;border-radius:4px" data-page-node-id="mBM8vdDHPuv1BvX8RWmxIQ">确认清空</code>：</p>
+        <input type="text" id="clear-confirm-input" placeholder="输入「确认清空」"
+          style="width:100%;padding:10px 12px;border:1px solid var(--border-2);border-radius:6px;margin-top:6px;font:inherit;background:var(--bg-2);color:var(--fg)" data-page-node-id="zcBcHMuUiMHeddImc99jnN" />
+      </div>
+      <footer data-page-node-id="3iR03b48Ro605N7jBWWBta">
+        <button class="btn ghost" data-close data-page-node-id="5KkQX8wzaAXECwBaWDAfDn"></button>
+        <button class="btn danger" id="btn-clear-confirm" disabled data-page-node-id="plSliqRYwGaJ8vCRtKVYxt"></button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ============ 模态框：章节重命名 ============ -->
+  <div class="modal" id="modal-rename" hidden data-page-node-id="RbyBLV2fmQV5CQ6K5p5Ury">
+    <div class="modal-card" style="max-width:480px" data-page-node-id="Hz7C1R892bSegjr8EeqNPw">
+      <header data-page-node-id="iaxXrw6peID5r9Pp8KwiEa">
+        <h3 id="modal-rename-title" data-page-node-id="miqvpUi9zUu9PnDCbBRoOU"></h3>
+        <button class="icon-btn" data-close data-page-node-id="62m7CrnaOAgoxItY2zP7el"></button>
+      </header>
+      <div class="modal-body" data-page-node-id="2L0JAKqIrBSGI9eVrdrZRC">
+        <label id="rename-label" data-page-node-id="hOFpaRVcw2LDaW9jVZRktY">新章节名
+          <input type="text" id="rename-input"
+            style="width:100%;padding:10px 12px;border:1px solid var(--border-2);border-radius:6px;margin-top:6px;font:inherit;background:var(--bg-2);color:var(--fg)" data-page-node-id="l8dV6jSa4kRktDKFuDbXVa" />
+        </label>
+      </div>
+      <footer data-page-node-id="wxGnZt6W0cpbxiCXs1enFR">
+        <button class="btn ghost" data-close data-page-node-id="aJkw4xhAhuL1sZDMgK1AnC"></button>
+        <button class="btn primary" id="btn-rename-confirm" data-page-node-id="hv0l1idNm7soA3GUBt0GlC"></button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ============ 模态框：题目编辑 ============ -->
+  <div class="modal" id="modal-question" hidden data-page-node-id="oteKeQnvLRnkk75sMVN91Z">
+    <div class="modal-card" data-page-node-id="e6wIoYHsFmpx1FI4IuGGtq">
+      <header data-page-node-id="1B0QTBIGGRffPkOC3CQk4b">
+        <h3 id="modal-q-title" data-page-node-id="YAR39idbC3ezQsMhWzdiQM">录入题目</h3>
+        <button class="icon-btn" data-close data-page-node-id="PhbqUhsF6yjIpKsLz8G6AJ"></button>
+      </header>
+      <div class="modal-body" data-page-node-id="33HlLtm8HDkiefNjuYthbo">
+        <label id="q-chap-label" data-page-node-id="8uiNt4TOi8Dk4V1dz42hgW">所属章节
+          <select id="q-chapter" data-page-node-id="qzWXrPl7pHjV0CczCSX44U"></select>
+        </label>
+        <label id="q-stem-label" data-page-node-id="7yq6Hp2VY8kurDKCaorMWX">题干
+          <textarea id="q-stem" rows="4" placeholder="题目正文"></textarea>
+        </label>
+        <label id="q-opts-label" data-page-node-id="xITwxxvmZoqyOWDmbiuYLK">选项（每行一个；可写 A. xxx / B. xxx ... 也可不带字母）
+          <textarea id="q-options" rows="4" placeholder="A. 选项一&#10;B. 选项二&#10;C. 选项三&#10;D. 选项四"></textarea>
+        </label>
+        <label id="q-answer-label" data-page-node-id="5WVnkwGhuDJ71ewBGBuDxQ">正确答案
+          <input id="q-answer" placeholder="A / B / C / D 或完整文本" data-page-node-id="OA25YJayBO0bBen5dagNyO" />
+        </label>
+        <label id="q-expl-label" data-page-node-id="fVs38Bn7funNMoqRyvr8D5">解析（可选）
+          <textarea id="q-explanation" rows="3" placeholder="答案说明 / 解题思路"></textarea>
+        </label>
+      </div>
+      <footer data-page-node-id="B9lpUFXoaJKCp3DCj1JStM">
+        <button class="btn ghost" data-close data-page-node-id="FOUdwJdCWA7DubOY0zrEqP"></button>
+        <button class="btn primary" id="btn-save-question" data-page-node-id="jdyTdoX9LN2FLd2ngC5DTT"></button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ============ 模态框：从教材原文划取答案 ============ -->
+  <div class="modal" id="modal-picker" hidden>
+    <div class="modal-card modal-picker-card">
+      <header>
+        <h3>从教材划取 <span id="picker-target-label" class="muted" style="font-weight:400;font-size:14px"></span></h3>
+        <button class="modal-close" data-close>×</button>
+      </header>
+      <div class="modal-body">
+        <div id="picker-empty-hint" class="picker-empty-hint" hidden>
+          <div class="emoji" style="font-size:36px;margin-bottom:10px">📑</div>
+          <p style="margin:0 0 6px;font-weight:500">这本教材还没有保存原文</p>
+          <p class="muted" style="margin:0;font-size:13px;line-height:1.6">
+            可能原因：① 教材是早期导入的，缓存里没原文；② 教材是扫描件 PDF（图片型，无文字层）。<br>
+            解决办法：把教材对应章节的文字复制粘贴到下面的大框里，搜索 / 划取照样能用 ✨
+          </p>
+        </div>
+        <div id="picker-source-wrap" class="picker-source-wrap">
+          <textarea id="picker-source" placeholder="教材原文（粘贴一段文字进来就可以划取答案 / 解析）" spellcheck="false"></textarea>
+        </div>
+        <div class="picker-toolbar">
+          <input type="search" id="picker-search" placeholder="🔍 搜索关键词（如「企业战略」「资本结构」），命中段会高亮" />
+          <span class="muted" id="picker-hits" style="font-size:12px"></span>
+        </div>
+      </div>
+      <footer>
+        <span class="muted" style="font-size:12px;margin-right:auto">用鼠标在文本里拖选一段，点击下方按钮填入</span>
+        <button class="btn ghost" data-close>取消</button>
+        <button class="btn primary" id="btn-picker-fill-answer">填到答案</button>
+        <button class="btn primary" id="btn-picker-fill-explanation">填到解析</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ============ 模态框：解析预览 ============ -->
+  <div class="modal" id="modal-parse" hidden data-page-node-id="Q9BLFHO6Cv2sI05rCnGAz6">
+    <div class="modal-card large" data-page-node-id="Ipi5T3Q5zNMt9Zx53rpUV1">
+      <header data-page-node-id="Ec6dh3S3laFhBEfGnLCXMV">
+        <h3 id="modal-parse-title" data-page-node-id="gYkmuE9ySE5HaoUZgLzG6h">解析预览</h3>
+        <button class="icon-btn" data-close data-page-node-id="moB9x0op5Sd0og6nX7D8US"></button>
+      </header>
+      <div class="modal-body" id="parse-body" data-page-node-id="Gkm14qNDqqdSaCpBAPLQnz"></div>
+      <footer data-page-node-id="2LKszbeK5dEGb1O9JSLHLL">
+        <button class="btn ghost" data-close data-page-node-id="dBXdMvDcmQG58OAEHCmlgu"></button>
+        <button class="btn primary" id="btn-confirm-parse" data-page-node-id="p2nLvtE7IvNTgkhUjBmn60">导入到题库</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ============ 模态框：OCR 进度 ============ -->
+  <div class="modal" id="modal-ocr" hidden data-page-node-id="1xIkONPd0BlDrlP1qxHC0K">
+    <div class="modal-card" data-page-node-id="JO1qg3eURbAKY7RdRiJweP">
+      <header data-page-node-id="LBEMIHRYnHJUwn4DQYIkiZ">
+        <h3 id="modal-ocr-title" data-page-node-id="mkql3yozp296NUWtGM0hU0">扫描件识别中（OCR）</h3>
+        <button class="icon-btn" data-close data-page-node-id="OyzbmQeXsMjZfIWGRBLIiN"></button>
+      </header>
+      <div class="modal-body" data-page-node-id="barP7Q5GB3bIhHqqtb3BJZ">
+        <p class="muted" data-page-node-id="iaBmX2EKQmUb0G4ovFshuY">扫描件 PDF 没有文字层，需要把每一页当成图片再用 Tesseract 识别。中文识别较慢（≈ 2–6 秒/页），请耐心等候。</p>
+        <div class="ocr-progress" data-page-node-id="L2tRbg9BMW7uGrr9I54atq">
+          <div class="ocr-progress-bar" data-page-node-id="YtMGEwXQKsB6qyXMD4ECWF"><div id="ocr-bar" class="ocr-progress-fill" data-page-node-id="8Yrb8MBqC6OvQBHROCXTVp"></div></div>
+          <div id="ocr-progress-text" class="muted" data-page-node-id="NlJszvzafzzs2u5hzJGyUt">准备中…</div>
+        </div>
+        <details class="ocr-log-wrap" data-page-node-id="jAfA5CkZLFLQpYsJRqhXS8">
+          <summary data-page-node-id="FQQeKfmhB9SLzz8VHRh2rI">识别日志</summary>
+          <pre id="ocr-log" data-page-node-id="gJ1k90L7yC6HsNLpG8BvjJ"></pre>
+        </details>
+      </div>
+      <footer data-page-node-id="VRCzxrgVCbPEIagzvDWIFx">
+        <button class="btn ghost" id="btn-ocr-cancel" data-page-node-id="3D5sXFoZPD5FNNvm0vDPbJ">取消</button>
+        <button class="btn primary" id="btn-ocr-close" hidden data-page-node-id="MHhUrgteEWgFevJDzaK4wh">关闭</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ============ 模态框：同步设置（GitHub Gist） ============ -->
+  <div class="modal" id="modal-sync" hidden data-page-node-id="g7Y4dK9pL2mN6xT3vB8wQ1">
+    <div class="modal-card" style="max-width:520px" data-page-node-id="j5K2nP8xT4mL9vB3wQ6yR0">
+      <header data-page-node-id="h1S3yN6rT9qL2pX5mV8wK4">
+        <h3 data-page-node-id="b4T8nK2mP6xL9vQ3wY5R7">云同步（GitHub Gist）</h3>
+        <button class="modal-close" data-close data-page-node-id="f2N6kL9mP3xT8vQ4wR7Y1B">×</button>
+      </header>
+      <div class="modal-body" data-page-node-id="r3Q8mK1nP5xT2vL7wB4Y9M">
+        <p class="muted" style="margin:0 0 14px;font-size:13px;line-height:1.6" data-page-node-id="v5N2kL8mP4xT9vQ6wR3Y1B">
+          把题库同步到你的 GitHub <strong>Gist</strong>（私密代码片段），所有设备只要填同一个 Token + Gist ID 就能共用一份数据。<br/>
+          <strong>首次使用步骤：</strong>
+        </p>
+        <ol class="muted" style="margin:0 0 14px 18px;font-size:12px;line-height:1.7" data-page-node-id="s3L9kM4nP7xT1vQ6wR2Y5B">
+          <li>访问 <a href="https://github.com/settings/tokens?type=beta" target="_blank" rel="noopener">GitHub Fine-grained Token</a>，新建一个</li>
+          <li>权限只勾选 <strong>Gists: Read and write</strong>，无需其它权限</li>
+          <li>把生成的 Token（<code>github_pat_xxx...</code>）粘到下方</li>
+          <li>点「创建 Gist」按钮，系统自动建好并填回 ID；之后所有设备共用同一个 Gist ID</li>
+        </ol>
+
+        <label class="field" data-page-node-id="c7P2nK5mP9xT3vQ6wR1Y8B">
+          <span>GitHub Token</span>
+          <input type="password" id="sync-token" placeholder="github_pat_xxx..." autocomplete="off"/>
+          <small class="muted">只存本地 localStorage，不上传任何服务器</small>
+        </label>
+
+        <label class="field" data-page-node-id="z6P1nK4mP8xT5vQ2wR9Y7B">
+          <span>Gist ID（设备间共用）</span>
+          <input type="text" id="sync-gist" placeholder="点下方「创建 Gist」自动生成" autocomplete="off"/>
+        </label>
+
+        <label class="field" data-page-node-id="x3P7nK9mP2xT6vQ1wR4Y8B">
+          <span>本设备名</span>
+          <input type="text" id="sync-device" placeholder="如：家里台式机" autocomplete="off"/>
+          <small class="muted">用于多设备合并时的归属标识</small>
+        </label>
+
+        <div class="sync-status" id="sync-status-box" hidden data-page-node-id="s9P4nK2mP7xT1vQ5wR8Y3B">
+          <span class="sync-dot"></span><span class="sync-msg"></span>
+        </div>
+
+        <!-- 同步体积明细：GitHub 接口单文件只返回前 1MB，超过会截断，这里提前给出提示 -->
+        <div class="sync-size" id="sync-size-hint" hidden data-page-node-id="sz4K7nP2mQ9xT5vR1wY8B3"></div>
+
+        <div class="sync-actions" data-page-node-id="a5P8nK3mP1xT6vQ4wR9Y2B">
+          <button class="btn ghost" id="btn-sync-create" data-page-node-id="c4P7nK9mP2xT8vQ5wR1Y3B">＋ 创建 Gist</button>
+          <button class="btn ghost" id="btn-sync-test" data-page-node-id="t1P5nK8mP4xT2vQ7wR3Y9B">测试连接</button>
+          <button class="btn" id="btn-sync-pull" data-page-node-id="p6P2nK9mP5xT8vQ3wR1Y4B">↓ 立即拉取</button>
+          <button class="btn primary" id="btn-sync-push" data-page-node-id="u3P7nK1mP9xT4vQ2wR5Y8B">↑ 立即上传</button>
+        </div>
+
+        <hr style="margin:18px 0;border:none;border-top:1px solid var(--line)"/>
+
+        <label class="checkbox" data-page-node-id="k8P4nK6mP2xT9vQ5wR7Y1B">
+          <input type="checkbox" id="sync-auto"/>
+          <span>自动同步（页面打开时拉取 · 答题 5 秒后上传）</span>
+        </label>
+
+        <p class="muted" style="font-size:12px;margin-top:12px;line-height:1.6" data-page-node-id="q2P6nK3mP8xT4vQ9wR1Y5B">
+          <strong>冲突处理：</strong>按时间戳比较，新版覆盖旧版；同一秒内多个设备都修改了时，弹出对话框让你选保留哪一份。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 模态框：帮助 / 上手指南 ============ -->
+  <div class="modal" id="modal-help" hidden data-page-node-id="r2pL6kHjN4m9Q8s7V5tR1c">
+    <div class="modal-card" style="max-width:560px" data-page-node-id="h3lP0kJiB6n5M4vC8xZ2aQ">
+      <header data-page-node-id="Wk1T8n5P2q9R7yL0c4vB3m">
+        <h3 id="modal-help-title" data-page-node-id="yK2dF7sJ3h6g1B9vT5n4X8">帮助</h3>
+        <button class="modal-close" data-close data-page-node-id="Cv4Bm8N1L0k5P3yH6j2T9R">×</button>
+      </header>
+      <div class="modal-body" id="help-body" data-page-node-id="Lp1N6v3B9m2K7xT4j5Y8R0"></div>
+    </div>
+  </div>
+
+  <!-- toast 提示 -->
+  <div id="toast" class="toast" data-page-node-id="lzHdL0kLPBsZK6vCvsOFpA"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
